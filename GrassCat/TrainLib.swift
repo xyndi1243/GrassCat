@@ -73,12 +73,17 @@ struct Trains{
         
         TrainSet(Tag:"", Words:"我跟你說喔！\n\n你一定要多試幾種種子的組合喔！多試試看，多創新喔！"),//
         
+        
         TrainSet(Tag:"Store", Words:"啊！對了！如果種子用完了，可以去那邊的商店買唷！\n\n要記住唷？"),//(指示商店?)
         
         
         TrainSet(Tag:"", Words:"♪ 種子用完了怎麼辦——？去商店！去商店！ ♪\n\n嘿，跟我唱一次。這會讓心情變好欸。"),
         
         TrainSet(Tag:"", Words:"♪ 種子用完了怎麼辦——去商店！去商店！ ♪\n\n♪ 去！商！店——！ ♪"),
+        
+        TrainSet(Tag:"", Words:"對啦，商店裡也有賣其他道具喔！"),
+        TrainSet(Tag:"", Words:"道具只有在種子還沒長大的時候可以用，戳戳種貓咪用的土就可以把道具塞進去啦！"),
+        TrainSet(Tag:"", Words:"♪ 想要道具怎麼辦——去商店！去商店！ ♪\n\n♪ 去！商！店——！ ♪"),
         
         TrainSet(Tag:"END", Words:"")
     ]

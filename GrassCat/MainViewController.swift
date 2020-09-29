@@ -50,6 +50,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     @IBOutlet weak var itemButton: UIButton!
     @IBOutlet weak var combineButton: UIButton!
     @IBOutlet weak var backMainButton: UIButton!
+    @IBOutlet weak var backMainButton2: UIButton!
     
     @IBOutlet weak var plusMoney: UIButton!
     
@@ -288,10 +289,10 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     @IBOutlet weak var storyView6: UIView!
     @IBOutlet weak var storyImage6: UIButton!
     @IBOutlet weak var storyTitle6: UIButton!
-//
-//    @IBOutlet weak var getSeedsView: UIView!
-//    @IBOutlet weak var SeedSeedImage: UIImageView!
-//    @IBOutlet weak var SeedSeedAmount: UILabel!
+    //
+    //    @IBOutlet weak var getSeedsView: UIView!
+    //    @IBOutlet weak var SeedSeedImage: UIImageView!
+    //    @IBOutlet weak var SeedSeedAmount: UILabel!
     @IBOutlet weak var SeedSeedNew: UIImageView!
     
     override func viewDidLoad() {
@@ -354,6 +355,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         for e in libButtonArray{
             e!.setBackgroundImage(UIImage(named: "library_unknown.png"), for: .normal)
         }
+        backMainButton2.alpha = 1
         
         var setIsHiddenArray = [getSeedsMoneyView,seedMoneySeedStack,seedMoneyStack,seedLabel]//getSeedsView
         let catScrollArray = [catScrollView1,catScrollView2,catScrollView3,catScrollView4,catScrollView5]
@@ -377,10 +379,10 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         let rotateArray = catAmountArray + plantTimeArray + itemAmountArray
         for e in rotateArray{
             e!.transform = CGAffineTransform(rotationAngle: -(CGFloat.pi/15))
-           
+            
         }
         for e in plantTimeArray{
-             e!.titleLabel?.adjustsFontForContentSizeCategory = true
+            e!.titleLabel?.adjustsFontForContentSizeCategory = true
         }
         
         let isEnableArray = itemButtonArray + itemAmountArray + catButtonArray + catAmountArray //+ plantTimeArray
@@ -392,6 +394,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         
         
         seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: 0)
+        SeedMoneySeedImage.transform = CGAffineTransform(translationX: 0, y: 0)
         sitePressed = ""
         money.text = String(realm.objects(MainData.self)[0].mainMoney)
         
@@ -428,6 +431,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 getSeedsMoneyView.isHidden = false
                 seedMoneySeedStack.isHidden = false
                 seedMoneyStack.isHidden = false
+                seedMoneySeedAmount.isHidden = false
                 SeedMoneySeedImage.image = UIImage(named: "\(seedImage).png")
                 seedMoneySeedAmount.text = String("x \(seedAmount)")
                 seedMoneyMoney.text = String("x \(moneyAmount)")
@@ -448,14 +452,14 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                     playSoundEffect(fileName: "6_2")
                 }
                 
-//                backMainButton.alpha = 1
+                //                backMainButton.alpha = 1
                 
             }
                 //else 跳使用道具
             else if realm.objects(SiteData.self)[siteNO].propUsed == false{
                 playSoundEffect(fileName: "1")
                 
-//                backMainButton.alpha = 1
+                //                backMainButton.alpha = 1
                 itemsView.alpha = 1
                 itemConfirm.alpha = 1
                 itemsTab.isHidden = true
@@ -475,33 +479,59 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 let propAmountInDB = realm.objects(PropsData.self).count
                 
                 showRows(ScrollArray: itemScrollArray,Result: propAmountInDB,line: 5)
-                
+                print("propCount = 1, propShowCount = 0")
                 var propCount = 1
+                var propShowCount = 0
                 if propAmountInDB >= 1{
                     for a in 0...propAmountInDB - 1{
-                        itemButtonArray[a]!.alpha = 1
-                        itemAmountArray[a]!.alpha = 1
+                        
                         let propDB = realm.objects(PropsData.self).filter( "Seq == \(propCount)")
                         for result in propDB{
-                            itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
-                            itemButtonArray[a]!.setTitle("\(propCount)", for: .normal)
-                            itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
-                            itemAmountArray[a]!.setTitle("\(result.Amount)", for: .normal)
+                            if result.Amount > 0{
+                                itemButtonArray[propShowCount]!.alpha = 1
+                                itemAmountArray[propShowCount]!.alpha = 1
+                                itemButtonArray[propShowCount]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                                itemButtonArray[propShowCount]!.setImage(UIImage(named: "blank.png"), for: .normal)
+                                itemButtonArray[propShowCount]!.setTitle("\(propCount)", for: .normal)
+                                
+                                itemButtonArray[propShowCount]!.setTitleColor(UIColor.clear, for: .normal)
+                                itemAmountArray[propShowCount]!.setTitle("\(result.Amount)", for: .normal)
+                                propShowCount += 1
+                            }
                             
                             propCount += 1
                         }
                         
                     }
+                    if propShowCount == 0{
+                        //show no props can use, please goto shop
+                        itemsView.alpha = 0
+                        print("沒有道具可使用\n\n請到商店購買")
+                        getSeedsMoneyView.isHidden = false
+                        seedLabel.isHidden = false
+                        seedLabel.text = "沒有道具可使用\n\n請到商店購買"
+                    }
+                    
                 }
+                    
+                else{
+                    //show no props can use, please goto shop
+                    itemsView.alpha = 0
+                    print("沒有道具可使用\n\n請到商店購買")
+                    getSeedsMoneyView.isHidden = false
+                    seedLabel.isHidden = false
+                    seedLabel.text = "沒有道具可使用\n\n請到商店購買"
+                }
+                
             }
             else if realm.objects(SiteData.self)[siteNO].propUsed == true{
                 getSeedsMoneyView.isHidden = false
                 seedLabel.isHidden = false
-//                backMainButton.alpha = 1
+                //                backMainButton.alpha = 1
                 seedLabel.text = "已使用過道具\n\n不可再使用"
             }
         }
-    
+            
         else{
             playSoundEffect(fileName: "2")
             let catButtonArray = [catButton1_1,catButton1_2,catButton1_3,catButton2_1,catButton2_2,catButton2_3,catButton3_1,catButton3_2,catButton3_3,catButton4_1,catButton4_2,catButton4_3,catButton5_1,catButton5_2,catButton5_3]
@@ -541,15 +571,16 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
             }
             
             var boxCount = 1
-            for b in boxButtonArray[0...boxesInDB - 1]{
-                b!.alpha = 1
+            for b in 0...boxesInDB - 1{
+                boxButtonArray[b]!.alpha = 1
                 let boxes = realm.objects(BoxesData.self).filter( "Seq == \(boxCount)")
                 for result in boxes{
-                    b!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
-                    b!.setImage(UIImage(named: "blank.png"), for: .normal)
-                    b!.setTitle("\(boxCount)", for: .normal)
-                    b!.setTitleColor(UIColor.clear, for: .normal)
-                    b!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
+                    boxButtonArray[b]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                    boxButtonArray[b]!.setImage(UIImage(named: "blank.png"), for: .normal)
+                    boxButtonArray[b]!.setTitle("\(boxCount)", for: .normal)
+                    boxButtonArray[b]!.setTitleColor(UIColor.clear, for: .normal)
+                    boxButtonArray[b]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
+//                    boxButtonArray[b]!.transform = CGAffineTransform(translationX: 0, y: -20)
                 }
                 boxCount += 1
             }
@@ -595,12 +626,15 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     @IBAction func catboxConfirmPressed(_ sender: UIButton) {
         playSoundEffect(fileName: "5")
         let seedLib = SeedLib()
+        let boxLib = BoxLib()
         var seedTime = Date()
         var seedImage = ""
         var plantTime = 0
         var boxImage = ""
         var seedToPlant = seedSelected
         var boxNO = 0
+        var boxRate = 0.0
+        var seedPlus = 0
         //        let siteArray = [catSite1Button,catSite2Button,catSite3Button,catSite4Button,catSite5Button,catSite6Button,catSite7Button,catSite8Button]
         //        let timeArray = [catTime1Button,catTime2Button,catTime3Button,catTime4Button,catTime5Button,catTime6Button,catTime7Button,catTime8Button]
         if seedSelected != "" && boxSelected != "" {
@@ -627,6 +661,9 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
             for result in boxInfo{
                 boxImage = result.Image
                 boxNO = result.NO
+                plantTime = Int(Double(boxLib.getBoxforSell(NO: boxNO).Rate) * Double(plantTime))
+                seedTime = Date() + TimeInterval(plantTime)
+                seedPlus = boxLib.getBoxforSell(NO: boxNO).AddAmount
             }
             
             
@@ -640,6 +677,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 realm.objects(SiteData.self)[siteNO].siteImage = boxImage
                 realm.objects(SiteData.self)[siteNO].plantTime = plantTime
                 realm.objects(SiteData.self)[siteNO].flag = true
+                realm.objects(SiteData.self)[siteNO].plusSeed += seedPlus
                 realm.objects(SeedsData.self)[Int(seedSelected)!].Amount -= 1
             }
             
@@ -1064,9 +1102,13 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         itemConfirm.setImage(UIImage(named: "confirm_Dark.png"), for: .normal)
         showRows(ScrollArray: itemScrollArray,Result: 1 ,line: 5)
         
+        getSeedsMoneyView.isHidden = true
+        seedLabel.isHidden = true
+        
         itemScrollView.setContentOffset(CGPoint(x: 0, y: 0 ), animated: false)
         for a in itemButtonArray{
             a!.transform = CGAffineTransform(translationX: 0, y: 0)
+            a!.transform = CGAffineTransform(scaleX: 1, y: 1)
             a!.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
         
@@ -1115,40 +1157,49 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 tabRightButton.setBackgroundImage(UIImage(named: "tab_Dark.png"), for: .normal)
                 
                 let boxes = BoxLib()//要先找出到底哪些NO是可以買的，再把數量算出來&show進圖片
-                //                var NO = [1]
-                //                for TmpNO in 1...boxes.boxes.count{
-                //                    if realm.objects(BoxesData.self).filter( "#NO == \(TmpNO)").count == 0{
-                //                        NO += [TmpNO]
-                //                    }
-                //                }
-                //                NO.remove(at: 0)
-                //                print(NO)
-                //                var boxCount = 0
-                //                let boxCanBuy = NO.count // 已在DB的不能買
-                var boxCount = 1
-                let boxCanBuy = boxes.boxes.count
+                var NO = [1]
+                for TmpNO in 1...boxes.boxes.count{
+                    if realm.objects(BoxesData.self).filter( "#NO == \(TmpNO)").count == 0{
+                        NO += [TmpNO]
+                    }
+                }
+                NO.remove(at: 0)
+                print(NO)
+                var boxCount = 0
+                let boxCanBuy = NO.count // 已在DB的不能買
+                //                var boxCount = 1
+                //                let boxCanBuy = boxes.boxes.count
                 
                 showRows(ScrollArray: itemScrollArray,Result: boxCanBuy,line: 5)
                 
-                for a in 0...(boxCanBuy - 1){
-                    let boxCost = boxes.getBoxforSell(NO: boxCount).Cost
+                if NO.count > 0{
                     
-                    itemButtonArray[a]!.alpha = 1
-                    itemAmountArray[a]!.alpha = 1
-                    itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(boxes.getBoxforSell(NO: boxCount).Image).png"), for: .normal)
-                    itemButtonArray[a]!.setImage(UIImage(named: "blank.png"), for: .normal)
-                    itemButtonArray[a]!.setTitle("\(boxCount)", for: .normal)
-                    itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
-                    itemAmountArray[a]!.setTitle("\(boxCost)", for: .normal)//no
-                    itemButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
-                    
-                    itemButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
-                    
-                    if (boxCost > realm.objects(MainData.self)[0].mainMoney) || (realm.objects(BoxesData.self).filter( "#NO == \(a + 1)").count != 0){
-                        itemButtonArray[a]!.isEnabled = false
-                        itemAmountArray[a]!.isEnabled = false
+                    for a in 0...(boxCanBuy - 1){
+                        let boxCost = boxes.getBoxforSell(NO: NO[a]).Cost//boxCount).Cost
+                        
+                        itemButtonArray[a]!.alpha = 1
+                        itemAmountArray[a]!.alpha = 1
+                        itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(boxes.getBoxforSell(NO: NO[a]).Image).png"), for: .normal)//boxCount).Image).png"), for: .normal)
+                        itemButtonArray[a]!.setImage(UIImage(named: "blank.png"), for: .normal)
+                        itemButtonArray[a]!.setTitle("\(NO[a])", for: .normal)
+                        itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
+                        itemAmountArray[a]!.setTitle("\(boxCost)", for: .normal)//no
+                        itemButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
+                        
+                        itemButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
+                        
+                        if (boxCost > realm.objects(MainData.self)[0].mainMoney) || (realm.objects(BoxesData.self).filter( "#NO == \(NO[a])").count != 0){//\(a + 1)").count != 0){
+                            itemButtonArray[a]!.isEnabled = false
+                            itemAmountArray[a]!.isEnabled = false
+                        }
+                        boxCount += 1
                     }
-                    boxCount += 1
+                }
+                else{
+                    getSeedsMoneyView.isHidden = false
+                    seedLabel.isHidden = false
+                    seedLabel.text = "目前無其他可購買容器"
+                    backMainButton2.alpha = 0
                 }
             }
             else if sender.currentTitle == "道具" {
@@ -1161,9 +1212,10 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 
                 showRows(ScrollArray: itemScrollArray,Result: propsCanBuy,line: 5)
                 var propCount = 1
-                let propCost = props.getPropforSell(NO: propCount).Cost
+                
                 
                 for a in 0...(propsCanBuy - 1){
+                    let propCost = props.getPropforSell(NO: propCount).Cost
                     itemButtonArray[a]!.alpha = 1
                     itemAmountArray[a]!.alpha = 1
                     itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(props.getPropforSell(NO: propCount).Image).png"), for: .normal)
@@ -1171,6 +1223,8 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                     itemButtonArray[a]!.setTitle("\(propCount)", for: .normal)//no
                     itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
                     itemAmountArray[a]!.setTitle("\(propCost)", for: .normal)
+                    
+                    itemButtonArray[a]!.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
                     
                     if propCost > realm.objects(MainData.self)[0].mainMoney{
                         itemButtonArray[a]!.isEnabled = false
@@ -1223,24 +1277,45 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 
                 let boxes = BoxLib()
                 var boxCount = 1
-                let boxCanBuy = boxes.boxes.count
+                //let boxCanBuy = boxes.boxes.count
+                let boxAmountInDB = realm.objects(BoxesData.self).count
+                //
+                //
+                //可能會有問題，測試一下多個箱子（應該百分之百有問題，要去讀DB裡的箱子NO才對
+                //
+                //
+                //
+                showRows(ScrollArray: itemScrollArray,Result: boxAmountInDB,line: 5)
                 
-                showRows(ScrollArray: itemScrollArray,Result: boxCanBuy,line: 5)
+                //                for a in 0...(boxCanBuy - 1){
+                //
+                //                    itemButtonArray[a]!.alpha = 1
+                //                    itemAmountArray[a]!.alpha = 0
+                //                    itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(boxes.getBoxforSell(NO: boxCount).Image).png"), for: .normal)
+                //                    itemButtonArray[a]!.setImage(UIImage(named: "blank.png"), for: .normal)
+                //                    itemButtonArray[a]!.setTitle("\(boxCount)", for: .normal)//no
+                //                    itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
+                //
+                //
+                //
                 
-                for a in 0...(boxCanBuy - 1){
+                if boxAmountInDB >= 1{
+                    for a in 0...boxAmountInDB - 1{
+                        itemButtonArray[a]!.alpha = 1
+                        itemAmountArray[a]!.alpha = 1
+                        let boxDB = realm.objects(BoxesData.self).filter( "Seq == \(boxCount)")
+                        for result in boxDB{
+                            itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                            itemButtonArray[a]!.setTitle("\(boxCount)", for: .normal)
+                            itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
+                            itemAmountArray[a]!.alpha = 0
+                            boxCount += 1
+                        }
+                        itemButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
+                        itemButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
+                    }
                     
-                    itemButtonArray[a]!.alpha = 1
-                    itemAmountArray[a]!.alpha = 0
-                    itemButtonArray[a]!.setBackgroundImage(UIImage(named: "\(boxes.getBoxforSell(NO: boxCount).Image).png"), for: .normal)
-                    itemButtonArray[a]!.setImage(UIImage(named: "blank.png"), for: .normal)
-                    itemButtonArray[a]!.setTitle("\(boxCount)", for: .normal)//no
-                    itemButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
                     
-                    itemButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
-                    
-                    itemButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
-                    
-                    boxCount += 1
                 }
             }
             else if sender.currentTitle == "道具" {
@@ -1250,7 +1325,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 
                 let propAmountInDB = realm.objects(PropsData.self).count
                 
-                showRows(ScrollArray: itemScrollArray,Result: propAmountInDB,line: 4)
+                showRows(ScrollArray: itemScrollArray,Result: propAmountInDB,line: 5)
                 
                 var propCount = 1
                 if propAmountInDB >= 1{
@@ -1268,605 +1343,620 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                         }
                     }
                 }
+                else{
+                    getSeedsMoneyView.isHidden = false
+                    seedLabel.isHidden = false
+                    seedLabel.text = "尚未持有任何道具\n\n請至商店購買"
+                }
             }
         }
     }
+    
+    @IBAction func itemsPressed(_ sender: UIButton) {
+        playSoundEffect(fileName: "4")
+        let itemButtonArray = [itemButton1_1,itemButton1_2,itemButton1_3,itemButton2_1,itemButton2_2,itemButton2_3,itemButton3_1,itemButton3_2,itemButton3_3,itemButton4_1,itemButton4_2,itemButton4_3,itemButton5_1,itemButton5_2,itemButton5_3,itemButton6_1,itemButton6_2,itemButton6_3]
+        itemConfirm.setImage(UIImage(named: "confirm_Dark.png"), for: .normal)
+        
+        itemSelected = String(sender.currentTitle!)
+        
+        var NO = 1
+        for i in itemButtonArray{
+            i!.setImage(UIImage(named: "blank.png"), for: .normal)
+            NO += 1
+        }
+        
+        if setFuncPressed == "combine"{
             
-            @IBAction func itemsPressed(_ sender: UIButton) {
-                playSoundEffect(fileName: "4")
-                let itemButtonArray = [itemButton1_1,itemButton1_2,itemButton1_3,itemButton2_1,itemButton2_2,itemButton2_3,itemButton3_1,itemButton3_2,itemButton3_3,itemButton4_1,itemButton4_2,itemButton4_3,itemButton5_1,itemButton5_2,itemButton5_3,itemButton6_1,itemButton6_2,itemButton6_3]
-                itemConfirm.setImage(UIImage(named: "confirm_Dark.png"), for: .normal)
-                
-                itemSelected = String(sender.currentTitle!)
-                
-                var NO = 1
-                for i in itemButtonArray{
-                    i!.setImage(UIImage(named: "blank.png"), for: .normal)
-                    NO += 1
+            if combine1 == "" && combine2 == ""{
+                combine1 = itemSelected//sender.self.currentTitle!
+            }
+            else if combine1 != "" && combine2 == ""{
+                combine2 = itemSelected//sender.self.currentTitle!
+                itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
+            }
+            else{
+                if combine2 != itemSelected{//sender.self.currentTitle!{
+                    combine1 = combine2
+                    combine2 = itemSelected//sender.self.currentTitle!
                 }
-                
-                if setFuncPressed == "combine"{
-                    
-                    if combine1 == "" && combine2 == ""{
-                        combine1 = itemSelected//sender.self.currentTitle!
-                    }
-                    else if combine1 != "" && combine2 == ""{
-                        combine2 = itemSelected//sender.self.currentTitle!
-                        itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
-                    }
-                    else{
-                        if combine2 != itemSelected{//sender.self.currentTitle!{
-                            combine1 = combine2
-                            combine2 = itemSelected//sender.self.currentTitle!
-                        }
-                        itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
-                    }
-                    NO = 1
-                    for i in itemButtonArray{
-                        if i!.currentTitle == combine1 || i!.currentTitle == combine2{
-                            i!.setImage(UIImage(named: "Select.png"), for: .normal)
-                        }
-                        NO += 1
-                    }
-                    
+                itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
+            }
+            NO = 1
+            for i in itemButtonArray{
+                if i!.currentTitle == combine1 || i!.currentTitle == combine2{
+                    i!.setImage(UIImage(named: "Select.png"), for: .normal)
                 }
-                else if setFuncPressed == "store" {
-                    if tabSelected == "種子" {
-                        sender.setImage(UIImage(named: "Select.png"), for: .normal)
-                    }
-                    else if tabSelected == "容器" {
-                        sender.setImage(UIImage(named: "Select.png"), for: .normal)
-                    }
-                    else if tabSelected == "道具"{
-                        sender.setImage(UIImage(named: "Select.png"), for: .normal)
-                    }
-                    itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
-                }
-                
-                else if setFuncPressed == "propUsed"{
-                    sender.setImage(UIImage(named: "Select.png"), for: .normal)
-                    itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
-                }
-                
+                NO += 1
             }
             
-            @IBAction func itemsConfirmPressed(_ sender: UIButton) {
-                playSoundEffect(fileName: "5")
-                var getImage = ""
+        }
+        else if setFuncPressed == "store" {
+            if tabSelected == "種子" {
+                sender.setImage(UIImage(named: "Select.png"), for: .normal)
+            }
+            else if tabSelected == "容器" {
+                sender.setImage(UIImage(named: "Select.png"), for: .normal)
+            }
+            else if tabSelected == "道具"{
+                sender.setImage(UIImage(named: "Select.png"), for: .normal)
+            }
+            itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
+        }
+            
+        else if setFuncPressed == "propUsed"{
+            sender.setImage(UIImage(named: "Select.png"), for: .normal)
+            itemConfirm.setImage(UIImage(named: "confirm_Light.png"), for: .normal)
+        }
+        
+    }
+    
+    @IBAction func itemsConfirmPressed(_ sender: UIButton) {
+        playSoundEffect(fileName: "5")
+        var getImage = ""
+        
+        if setFuncPressed == "combine"{
+            if combine1 != "" && combine2 != ""{
+                let getSeed = MixSeeds()
+                var seed = SeedLib()
+                var newSeedSeq = 0
+                print("combine1 = ",combine1," combine2 = ",combine2)
+                print("combine1 INT = ",Int(combine1)!," combine2 INT = ",Int(combine2)!)
+                var Seed1NO = 0
+                var Seed2NO = 0
+                let Seed1 = realm.objects(SeedsData.self).filter( "Seq == \(Int(combine1)!)")
+                print("seed1 SEQ get")
+                for array in Seed1{
+                    Seed1NO = array.NO
+                    print("seed1 = ",Seed1NO)
+                }
+                let Seed2 = realm.objects(SeedsData.self).filter( "Seq == \(Int(combine2)!)")
+                for array in Seed2{
+                    Seed2NO = array.NO
+                    print("seed2 = ",Seed2NO)
+                }
+                print("GET ",Seed1NO,Seed2NO)
+                let newSeedNO = getSeed.getNewCombineSeed(NO1: Seed1NO, NO2: Seed2NO)
+                print("NEW ",newSeedNO)
+                let newSeedInfo = realm.objects(SeedsData.self).filter( "#NO == \(newSeedNO)")
+                print("NEW COUNT ",newSeedInfo.count)
+                if newSeedInfo.count == 0{
+                    let array = seed.getNameImage(NO: newSeedNO)
+                    let seedData = SeedsData(value:[array.Seq,array.NO,array.Image,array.Name,5,array.Spec])
+                    getImage = array.Image
+                    print("NEW SEQ ",array.Seq)
+                    try! realm.write {
+                        realm.add(seedData)
+                    }
+                    SeedSeedNew.alpha = 1
+                    if array.Spec == true{
+                        try! realm.write {
+                            realm.objects(MainData.self)[0].storyStatus = true
+                        }
+                    }
+                }
+                else{
+                    for result in newSeedInfo{
+                        print(result.Seq)
+                        newSeedSeq = result.Seq
+                        getImage = result.Image
+                    }
+                    try! realm.write {
+                        realm.objects(SeedsData.self)[newSeedSeq].Amount += 5
+                    }
+                }
+                try! realm.write {
+                    realm.objects(SeedsData.self)[Int(combine1)!].Amount -= 5
+                    realm.objects(SeedsData.self)[Int(combine2)!].Amount -= 5
+                }
+                getSeedsMoneyView.isHidden = false
+                backMainButton.alpha = 1
+                seedMoneySeedStack.isHidden = false
+                SeedMoneySeedImage.image = UIImage(named: "\(getImage).png")
+                seedMoneySeedAmount.text = String("x 5")
+                itemsView.alpha = 0
+                seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: -20)
+            }
+        }
+        else if setFuncPressed == "store" && String(itemSelected) != ""{
+            seedMoneySeedAmount.isHidden = false
+            //if Tab = seeds, 減掉一組種子的錢，增加一組種子的數量（三顆？一顆？？？？）
+            if tabSelected == "種子" {
+                var seed = SeedLib()
+                let seedDB = realm.objects(SeedsData.self).filter( "#Seq == \(itemSelected)")
+                var NO = 0
+                var getAmount = 0
+                for array in seedDB{
+                    NO = array.NO
+                    getImage = array.Image
+                }
+                let Cost = seed.seedCost(NO: NO)
+                //                getImage = realm.objects(SeedsData.self)[seq].Image
+                try! realm.write {
+                    realm.objects(MainData.self)[0].mainMoney -= Cost
+                    realm.objects(SeedsData.self)[NO].Amount += 5
+                }
                 
-                if setFuncPressed == "combine"{
-                    if combine1 != "" && combine2 != ""{
-                        let getSeed = MixSeeds()
-                        var seed = SeedLib()
-                        var newSeedSeq = 0
-                        print("combine1 = ",combine1," combine2 = ",combine2)
-                        print("combine1 INT = ",Int(combine1)!," combine2 INT = ",Int(combine2)!)
-                        var Seed1NO = 0
-                        var Seed2NO = 0
-                        let Seed1 = realm.objects(SeedsData.self).filter( "Seq == \(Int(combine1)!)")
-                        print("seed1 SEQ get")
-                        for array in Seed1{
-                            Seed1NO = array.NO
-                            print("seed1 = ",Seed1NO)
-                        }
-                        let Seed2 = realm.objects(SeedsData.self).filter( "Seq == \(Int(combine2)!)")
-                        for array in Seed2{
-                            Seed2NO = array.NO
-                            print("seed2 = ",Seed2NO)
-                        }
-                        print("GET ",Seed1NO,Seed2NO)
-                        let newSeedNO = getSeed.getNewCombineSeed(NO1: Seed1NO, NO2: Seed2NO)
-                        print("NEW ",newSeedNO)
-                        let newSeedInfo = realm.objects(SeedsData.self).filter( "#NO == \(newSeedNO)")
-                        print("NEW COUNT ",newSeedInfo.count)
-                        if newSeedInfo.count == 0{
-                            let array = seed.getNameImage(NO: newSeedNO)
-                            let seedData = SeedsData(value:[array.Seq,array.NO,array.Image,array.Name,5,array.Spec])
-                            getImage = array.Image
-                            print("NEW SEQ ",array.Seq)
-                            try! realm.write {
-                                realm.add(seedData)
-                            }
-                            SeedSeedNew.alpha = 1
-                            if array.Spec == true{
-                                try! realm.write {
-                                    realm.objects(MainData.self)[0].storyStatus = true
-                                }
-                            }
-                        }
-                        else{
-                            for result in newSeedInfo{
-                                print(result.Seq)
-                                newSeedSeq = result.Seq
-                                getImage = result.Image
-                            }
-                            try! realm.write {
-                                realm.objects(SeedsData.self)[newSeedSeq].Amount += 5
-                            }
-                        }
-                        try! realm.write {
-                            realm.objects(SeedsData.self)[Int(combine1)!].Amount -= 5
-                            realm.objects(SeedsData.self)[Int(combine2)!].Amount -= 5
-                        }
-                        getSeedsMoneyView.isHidden = false
-                        backMainButton.alpha = 1
-                        seedMoneySeedStack.isHidden = false
-                        SeedMoneySeedImage.image = UIImage(named: "\(getImage).png")
-                        seedMoneySeedAmount.text = String("x 5")
-                        itemsView.alpha = 0
-                        seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: -20)
-                    }
+                seedMoneySeedAmount.text = String("x 5")
+            }
+                //else if Tab = boxes, 減掉箱子的錢，新增一筆箱子data進Realm
+            else if tabSelected == "容器" {
+                print("you buy box \(Int(itemSelected))")
+                var box = BoxLib()
+                let Cost = box.getBoxforSell(NO: Int(itemSelected)!).Cost
+                let array = box.getBoxesData(NO: Int(itemSelected)!)
+                getImage = array.Image
+                let boxData = BoxesData(value:[array.Seq,array.NO,array.Name,array.Image])
+                                       
+                try! realm.write {
+                    realm.objects(MainData.self)[0].mainMoney -= Cost
+                    realm.add(boxData)
                 }
-                else if setFuncPressed == "store" && String(itemSelected) != ""{
-                    seedMoneySeedAmount.isHidden = false
-                    //if Tab = seeds, 減掉一組種子的錢，增加一組種子的數量（三顆？一顆？？？？）
-                    if tabSelected == "種子" {
-                        var seed = SeedLib()
-                        let seedDB = realm.objects(SeedsData.self).filter( "#Seq == \(itemSelected)")
-                        var NO = 0
-                        var getAmount = 0
-                        for array in seedDB{
-                            NO = array.NO
-                            getImage = array.Image
-                        }
-                        let Cost = seed.seedCost(NO: NO)
-                        //                getImage = realm.objects(SeedsData.self)[seq].Image
-                        try! realm.write {
-                            realm.objects(MainData.self)[0].mainMoney -= Cost
-                            realm.objects(SeedsData.self)[NO].Amount += 5
-                        }
-                        
-                        seedMoneySeedAmount.text = String("x 5")
+                SeedSeedNew.alpha = 1
+                SeedMoneySeedImage.transform = CGAffineTransform(translationX: 20, y: -25)
+                seedMoneySeedAmount.isHidden = true
+            }
+                //else if Tab = Props, 減掉道具的錢，如果Realm裡面沒有那個道具則新增道具，若有則新增數量
+            else if tabSelected == "道具"{
+                var prop = PropLib()
+                let Cost = prop.getPropforSell(NO: Int(itemSelected)!).Cost
+                
+                let buyPropInfo = realm.objects(PropsData.self).filter( "#NO == \(Int(itemSelected)!)")
+                
+                if buyPropInfo.count == 0 {
+                    let array = prop.getPropData(NO: Int(itemSelected)!)
+                    getImage = array.Image
+                    let propData = PropsData(value:[array.Seq, array.NO, array.Name, array.Image, 5])
+                    try! realm.write {
+                        realm.add(propData)
                     }
-                        //else if Tab = boxes, 減掉箱子的錢，新增一筆箱子data進Realm
-                    else if tabSelected == "容器" {
-                        var box = BoxLib()
-                        let Cost = box.getBoxforSell(NO: Int(itemSelected)!).Cost
-                        let array = box.getBoxesData(NO: Int(itemSelected)!)
-                        getImage = array.Image
-                        let boxData = BoxesData(value:[array.Seq,array.NO,array.Name,array.Image])
-//                        SeedSeedImage.center.y -= 20
-//                        SeedSeedImage.center.x += 25
-                        try! realm.write {
-                            realm.objects(MainData.self)[0].mainMoney -= Cost
-                            realm.add(boxData)
-                        }
-                        SeedSeedNew.alpha = 1
-                        seedMoneySeedAmount.isHidden = true
-                    }
-                        //else if Tab = Props, 減掉道具的錢，如果Realm裡面沒有那個道具則新增道具，若有則新增數量
-                    else if tabSelected == "道具"{
-                        var prop = PropLib()
-                        let Cost = prop.getPropforSell(NO: Int(itemSelected)!).Cost
-                        
-                        let buyPropInfo = realm.objects(PropsData.self).filter( "#NO == \(Int(itemSelected)!)")
-                        
-                        if buyPropInfo.count == 0 {
-                            let array = prop.getPropData(NO: Int(itemSelected)!)
-                            getImage = array.Image
-                            let propData = PropsData(value:[array.Seq, array.NO, array.Name, array.Image, 5])
-                            try! realm.write {
-                                realm.add(propData)
-                            }
-                            SeedSeedNew.alpha = 1
-                        }
-                        else{
-                            var propSeq = 0
-                            for result in buyPropInfo{
-                                propSeq = result.Seq
-                                getImage = result.Image
-                            }
-                            try! realm.write {
-                                realm.objects(PropsData.self)[propSeq - 1].Amount += 5
-                            }
-                        }
-                        try! realm.write {
-                            realm.objects(MainData.self)[0].mainMoney -= Cost
-                        }
-//                        SeedSeedAmount.text = String("x 5")
-                        seedMoneySeedAmount.text = String("x 5")
-                    }
-//                    getSeedsView.isHidden = false
-                    getSeedsMoneyView.isHidden = false
-                    seedMoneySeedStack.isHidden = false
-                    backMainButton.alpha = 1
-                    SeedMoneySeedImage.image = UIImage(named: "\(getImage).png")
-                    seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: -20)
-//                    SeedSeedImage.image = UIImage(named: "\(getImage).png")
-                    
-                    itemsView.alpha = 0
+                    SeedSeedNew.alpha = 1
                 }
-                else if setFuncPressed == "propUsed" && String(itemSelected) != ""{
-                    getSeedsMoneyView.isHidden = false
-                    seedLabel.isHidden = false
-                    backMainButton.alpha = 1
-                    itemsView.alpha = 0
-                    let prop = PropLib()
+                else{
                     var propSeq = 0
-                    let siteNO = (Int(sitePressed.suffix(1)) ?? 1) - 1
-                    print(siteNO)
-                    let usedPropInfo = realm.objects(PropsData.self).filter( "#NO == \(Int(itemSelected)!)")
-                    for a in usedPropInfo{
-                        propSeq = a.Seq - 1
-                        print(propSeq)
+                    for result in buyPropInfo{
+                        propSeq = result.Seq
+                        getImage = result.Image
                     }
-                    
-                    //get Seq for -1
-                    let effects = prop.getEffects(NO: Int(itemSelected)!)
-                    if effects.Effect == ""{//普通效果
-                        
-                        try! realm.write {
-                            realm.objects(SiteData.self)[siteNO].plantTime = Int(Float(realm.objects(SiteData.self)[siteNO].plantTime) * effects.Rate)//時間減少
-                            realm.objects(SiteData.self)[siteNO].plusSeed = effects.AddAmount//種子變多
-                            realm.objects(SiteData.self)[siteNO].propUsed = true
-                            realm.objects(PropsData.self)[propSeq].Amount -= 1
-                        }
-                        
+                    try! realm.write {
+                        realm.objects(PropsData.self)[propSeq - 1].Amount += 5
                     }
-                    else{
-                        //特殊道具效果
-                    }
-                    seedLabel.text = "已使用\n\n\(prop.getName(NO: Int(itemSelected)!))"
                 }
+                try! realm.write {
+                    realm.objects(MainData.self)[0].mainMoney -= Cost
+                }
+                //                        SeedSeedAmount.text = String("x 5")
+                seedMoneySeedAmount.text = String("x 5")
+            }
+            //                    getSeedsView.isHidden = false
+            getSeedsMoneyView.isHidden = false
+            seedMoneySeedStack.isHidden = false
+            backMainButton.alpha = 1
+            SeedMoneySeedImage.image = UIImage(named: "\(getImage).png")
+            seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: -20)
+            //                    SeedSeedImage.image = UIImage(named: "\(getImage).png")
+            
+            itemsView.alpha = 0
+        }
+        else if setFuncPressed == "propUsed" && String(itemSelected) != ""{
+            getSeedsMoneyView.isHidden = false
+            seedLabel.isHidden = false
+            backMainButton.alpha = 1
+            itemsView.alpha = 0
+            let prop = PropLib()
+            var propSeq = 0
+            var propNO = 0
+            let siteNO = (Int(sitePressed.suffix(1)) ?? 1) - 1
+            print(siteNO)
+            let usedPropInfo = realm.objects(PropsData.self).filter( "#Seq == \(Int(itemSelected)!)")
+            for a in usedPropInfo{
+                propSeq = Int(itemSelected)! - 1
+                propNO = a.NO
             }
             
-            @IBAction func StoryItemSelected(_ sender: UIButton) {
-                playSoundEffect(fileName: "5")
-                let storyImageArray = [storyImage1,storyImage2,storyImage3,storyImage4,storyImage5,storyImage6]
-                let storyTitleArray = [storyTitle1,storyTitle2,storyTitle3,storyTitle4,storyTitle5,storyTitle6]
-                for a in 0 ... 5{
-                    if (sender.self == storyImageArray[a] || sender == storyTitleArray[a]) && (sender.currentTitle != "???" && sender.currentImage != (UIImage(named: "library_unknown.png"))){
-                        
-                        try! realm.write {
-                            realm.objects(MainData.self)[0].reviewStatus = true
-                            realm.objects(MainData.self)[0].reviewStory = a + 1
-                        }
-                        performSegue(withIdentifier: K.backStory, sender: self)
-                        //gotoDelegate
-                    }
-                }
+            //get Seq for -1
+            let effects = prop.getEffects(NO: propNO)
+            if effects.Effect == ""{//普通效果
+                let OriPlanTime = realm.objects(SiteData.self)[siteNO].plantTime
+                let timeminer = Int(Float(OriPlanTime) * (1 - effects.Rate))
                 
-            }
-            
-            
-            
-            
-            @IBAction func ScollUpDown(_ sender: UIButton) {
-                let buttonPressed = sender.currentTitle!
-                let scroll = buttonPressed.prefix(3)
-                let direction = buttonPressed.suffix(2)
-                
-                var scrollView = catScrollView
-                
-                
-                switch scroll{
-                case "cat":
-                    scrollView = catScrollView
-                case "box":
-                    scrollView = boxScrollView
-                case "itm":
-                    scrollView = itemScrollView
-                case "lib":
-                    scrollView = libraryScrollView
-                default:
-                    scrollView = catScrollView
-                }
-                
-                
-                
-                let ContentHeight = scrollView!.contentLayoutGuide.layoutFrame.height
-                let FrameHeight = scrollView!.frameLayoutGuide.layoutFrame.height
-                let NowContentY = scrollView!.contentOffset.y
-                
-                
-                if direction == "DN" {
-                    playSoundEffect(fileName: "3")
-                    if NowContentY < ContentHeight - FrameHeight - 15 {
-                        scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY + 20), animated: true)
-                        
-                    }
-                    else {
-                        
-                        scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY + 20), animated: true)
-                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                            scrollView!.setContentOffset(CGPoint(x: 0, y: ContentHeight - FrameHeight ), animated: true)
-                        }
-                        
-                        
-                    }
-                    
-                }
-                else{
-                    playSoundEffect(fileName: "3_2")
-                    if NowContentY > 15{
-                        scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY - 20), animated: true)
-                        
-                    }
-                    else{
-                        scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY - 20), animated: true)
-                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                            scrollView!.setContentOffset(CGPoint(x: 0, y: 0 ), animated: true)
-                        }
-                        
-                    }
+                try! realm.write {
+                    realm.objects(SiteData.self)[siteNO].plantTime = Int(Float(OriPlanTime) * effects.Rate)//時間減少
+                    realm.objects(SiteData.self)[siteNO].plusSeed += effects.AddAmount//種子變多
+                    realm.objects(SiteData.self)[siteNO].propUsed = true
+                    realm.objects(PropsData.self)[propSeq].Amount -= 1
+                    realm.objects(SiteData.self)[siteNO].timer -= TimeInterval(timeminer)
                 }
                 
             }
-            
-            @IBAction func libraryTabPressed(_ sender: UIButton) {
-                playSoundEffect(fileName: "5")
-                tabSelected = sender.currentTitle!
-                let libButtonArray = [libraryButton1_1,libraryButton1_2,libraryButton1_3,libraryButton2_1,libraryButton2_2,libraryButton2_3,libraryButton3_1,libraryButton3_2,libraryButton3_3,libraryButton4_1,libraryButton4_2,libraryButton4_3,libraryButton5_1,libraryButton5_2,libraryButton5_3,libraryButton6_1,libraryButton6_2,libraryButton6_3]
-                
-                let libScrollArray = [libraryScrollView1,libraryScrollView2,libraryScrollView3,libraryScrollView4,libraryScrollView5,libraryScrollView6]
-                
-                for e in libButtonArray{
-                    e!.setBackgroundImage(UIImage(named: "library_unknown.png"), for: .normal)
-                }
-                libraryScrollView.setContentOffset(CGPoint(x: 0, y: 0 ), animated: false)
-                for a in libButtonArray{
-                    a!.transform = CGAffineTransform(translationX: 0, y: 0)
-                    a!.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                }
-                
-                if sender.currentTitle == "種子"{
-                    libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
-                    libTabMid.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    libTabRight.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    
-                    let seedAmountInDB = realm.objects(SeedsData.self).count - 1
-                    showRows(ScrollArray: libScrollArray,Result: seedAmountInDB,line: 4)
-                    var seedCount = 1
-                    
-                    for a in 0...seedAmountInDB - 1{
-                        libButtonArray[a]!.alpha = 1
-                        libButtonArray[a]!.alpha = 1
-                        let seedDB = realm.objects(SeedsData.self).filter( "Seq == \(seedCount)")
-                        for result in seedDB{
-                            libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
-                            libButtonArray[a]!.setTitle("\(seedCount)", for: .normal)
-                            libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
-                        }
-                        seedCount += 1
-                    }
-                    
-                }
-                else if sender.currentTitle == "容器" {
-                    libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    libTabMid.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
-                    libTabRight.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    
-                    let boxAmountInDB = realm.objects(BoxesData.self).count
-                    showRows(ScrollArray: libScrollArray,Result: boxAmountInDB,line: 4)
-                    var boxCount = 1
-                    
-                    for a in 0...boxAmountInDB - 1{
-                        libButtonArray[a]!.alpha = 1
-                        libButtonArray[a]!.alpha = 1
-                        let boxDB = realm.objects(BoxesData.self).filter( "Seq == \(boxCount)")
-                        for result in boxDB{
-                            libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
-                            libButtonArray[a]!.setTitle("\(boxCount)", for: .normal)
-                            libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
-                            libButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
-                            
-                            libButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
-                        }
-                        boxCount += 1
-                    }
-                    
-                }
-                else if sender.currentTitle == "道具" {
-                    libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    libTabMid.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
-                    libTabRight.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
-                    
-                    let propAmountInDB = realm.objects(PropsData.self).count
-                    
-                    showRows(ScrollArray: libScrollArray,Result: propAmountInDB,line: 4)
-                    var propCount = 1
-                    if propAmountInDB >= 1{
-                        for a in 0...propAmountInDB - 1{
-                            libButtonArray[a]!.alpha = 1
-                            libButtonArray[a]!.alpha = 1
-                            let propDB = realm.objects(PropsData.self).filter( "Seq == \(propCount)")
-                            for result in propDB{
-                                libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
-                                libButtonArray[a]!.setTitle("\(propCount)", for: .normal)
-                                libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
-                            }
-                            propCount += 1
-                        }
-                        
-                    }
-                    
-                }
+            else{
+                //特殊道具效果
             }
-            
+            seedLabel.text = "已使用\n\n\(prop.getName(NO: propNO))"
+        }
+    }
+    
+    @IBAction func StoryItemSelected(_ sender: UIButton) {
+        playSoundEffect(fileName: "5")
+        let storyImageArray = [storyImage1,storyImage2,storyImage3,storyImage4,storyImage5,storyImage6]
+        let storyTitleArray = [storyTitle1,storyTitle2,storyTitle3,storyTitle4,storyTitle5,storyTitle6]
+        for a in 0 ... 5{
+            if (sender.self == storyImageArray[a] || sender == storyTitleArray[a]) && (sender.currentTitle != "???" && sender.currentImage != (UIImage(named: "library_unknown.png"))){
+                
+                try! realm.write {
+                    realm.objects(MainData.self)[0].reviewStatus = true
+                    realm.objects(MainData.self)[0].reviewStory = a + 1
+                }
+                performSegue(withIdentifier: K.backStory, sender: self)
+                //gotoDelegate
+            }
+        }
+        
+    }
+    
+    
+    
+    
+    @IBAction func ScollUpDown(_ sender: UIButton) {
+        let buttonPressed = sender.currentTitle!
+        let scroll = buttonPressed.prefix(3)
+        let direction = buttonPressed.suffix(2)
+        
+        var scrollView = catScrollView
         
         
-            
-            @IBAction func libraryItemPressed(_ sender: UIButton) {
-                playSoundEffect(fileName: "4")
-                itemSelected = String(sender.currentTitle ?? "")
-                if String(itemSelected) != ""{
-                    libraryView.alpha = 0
-                    libraryContentView.alpha = 1
-                    setFuncPressed = "Library"
-                    if tabSelected == "種子"{
-                        let seeds = SeedLib()
-                        let seedDB = realm.objects(SeedsData.self).filter( "#Seq == \(itemSelected)")
-                        var NO = 0
-                        for array in seedDB{
-                            NO = array.NO
-                            libraryCatImage.image = UIImage(named: "\(array.Image).png")
-                            libraryCatName.text = array.Name
-                            print(NO)
-                            libraryCatInfo.text = seeds.getInfo(NO: NO)
-                        }
-                        
-                        
-                        
-                    }
-                    else if tabSelected == "容器" {
-                        let box = BoxLib()
-                        let boxDB = realm.objects(BoxesData.self).filter( "#Seq == \(itemSelected)")
-                        var NO = 0
-                        for array in boxDB{
-                            NO = array.NO
-                            libraryCatImage.image = UIImage(named: "\(array.Image).png")
-                            libraryCatName.text = array.Name
-                        }
-                        libraryCatInfo.text = box.getInfo(NO: NO)
-                    }
-                    else if tabSelected == "道具"{
-                        let prop = PropLib()
-                        let propDB = realm.objects(PropsData.self).filter( "#Seq == \(itemSelected)")
-                        var NO = 0
-                        for array in propDB{
-                            NO = array.NO
-                            libraryCatImage.image = UIImage(named: "\(array.Image).png")
-                            libraryCatName.text = array.Name
-                        }
-                        libraryCatInfo.text = prop.getInfo(NO: NO)
-                    }
+        switch scroll{
+        case "cat":
+            scrollView = catScrollView
+        case "box":
+            scrollView = boxScrollView
+        case "itm":
+            scrollView = itemScrollView
+        case "lib":
+            scrollView = libraryScrollView
+        default:
+            scrollView = catScrollView
+        }
+        
+        
+        
+        let ContentHeight = scrollView!.contentLayoutGuide.layoutFrame.height
+        let FrameHeight = scrollView!.frameLayoutGuide.layoutFrame.height
+        let NowContentY = scrollView!.contentOffset.y
+        
+        
+        if direction == "DN" {
+            playSoundEffect(fileName: "3")
+            if NowContentY < ContentHeight - FrameHeight - 15 {
+                scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY + 20), animated: true)
+                
+            }
+            else {
+                
+                scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY + 20), animated: true)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                    scrollView!.setContentOffset(CGPoint(x: 0, y: ContentHeight - FrameHeight ), animated: true)
                 }
+                
+                
             }
             
-            func playMusic(slider: Bool = false){
+        }
+        else{
+            playSoundEffect(fileName: "3_2")
+            if NowContentY > 15{
+                scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY - 20), animated: true)
                 
-                if realm.objects(SoundData.self)[0].musicOpen == true{
-                    print(realm.objects(SoundData.self)[0].musicOpen)
-                    if queuePlayer?.items() == nil {
-                        let url = Bundle.main.url(forResource: "BGM1", withExtension: "wav")
-                        let asset = AVAsset(url: url!)
-                        let item = AVPlayerItem(asset: asset)
-                        self.queuePlayer = AVQueuePlayer(playerItem: item)
-                        BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
-                    }
-                    if slider == true{
-                        queuePlayer.volume = Float(musicVolume)
-                    }
-                    else{
-                        queuePlayer.volume = realm.objects(SoundData.self)[0].musicVolume
-                    }
-//                    queuePlayer.play()
-                    self.queuePlayer?.play()
-                }
-                else{
-                    print(realm.objects(SoundData.self)[0].musicOpen)
-                    if queuePlayer?.items() != nil {
-                        queuePlayer.pause()
-                    }
+            }
+            else{
+                scrollView!.setContentOffset(CGPoint(x: 0, y: NowContentY - 20), animated: true)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                    scrollView!.setContentOffset(CGPoint(x: 0, y: 0 ), animated: true)
                 }
                 
             }
-            func playSoundEffect(fileName: String, slider: Bool = false){
-                if realm.objects(SoundData.self)[0].soundOpen == true{
-                    let url = Bundle.main.url(forResource: fileName, withExtension: "wav")
-                    player = try! AVAudioPlayer(contentsOf: url!)
-                    if slider == true{
-                        player.volume = Float(soundVolume)
-                    }
-                    else{
-                        player.volume = realm.objects(SoundData.self)[0].soundVolume
-                    }
-                    player.play()
+        }
+        
+    }
+    
+    @IBAction func libraryTabPressed(_ sender: UIButton) {
+        playSoundEffect(fileName: "5")
+        tabSelected = sender.currentTitle!
+        let libButtonArray = [libraryButton1_1,libraryButton1_2,libraryButton1_3,libraryButton2_1,libraryButton2_2,libraryButton2_3,libraryButton3_1,libraryButton3_2,libraryButton3_3,libraryButton4_1,libraryButton4_2,libraryButton4_3,libraryButton5_1,libraryButton5_2,libraryButton5_3,libraryButton6_1,libraryButton6_2,libraryButton6_3]
+        
+        let libScrollArray = [libraryScrollView1,libraryScrollView2,libraryScrollView3,libraryScrollView4,libraryScrollView5,libraryScrollView6]
+        
+        for e in libButtonArray{
+            e!.setBackgroundImage(UIImage(named: "library_unknown.png"), for: .normal)
+        }
+        libraryScrollView.setContentOffset(CGPoint(x: 0, y: 0 ), animated: false)
+        for a in libButtonArray{
+            a!.transform = CGAffineTransform(translationX: 0, y: 0)
+            a!.transform = CGAffineTransform(scaleX: 1, y: 1)
+            a!.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+        
+        if sender.currentTitle == "種子"{
+            libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
+            libTabMid.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
+            libTabRight.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
+            
+            let seedAmountInDB = realm.objects(SeedsData.self).count - 1
+            showRows(ScrollArray: libScrollArray,Result: seedAmountInDB,line: 4)
+            var seedCount = 1
+            
+            for a in 0...seedAmountInDB - 1{
+                libButtonArray[a]!.alpha = 1
+                libButtonArray[a]!.alpha = 1
+                let seedDB = realm.objects(SeedsData.self).filter( "Seq == \(seedCount)")
+                for result in seedDB{
+                    libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                    libButtonArray[a]!.setTitle("\(seedCount)", for: .normal)
+                    libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
                 }
+                seedCount += 1
             }
             
-            @IBAction func SpeedUP(_ sender: UIButton) {
-                
-                let TimeArray = [catTime1Button,catTime2Button,catTime3Button,catTime4Button,catTime5Button,catTime6Button,catTime7Button,catTime8Button]
-                
-                //紀錄sender
-                for a in 0...7{
-                    if TimeArray[a] == sender{
-                        rewardADSelect = String(a)
-                    }
-                }
-                if sender.currentTitle != "0:0"{
-                    if rewardedAd?.isReady == true {
-                        rewardedAd?.present(fromRootViewController: self, delegate:self)
-                    }
-                }
-                else {
-                    sender.setTitle("0:0", for: .normal)
-                }
-            }
-            @IBAction func moneyPlusPressed(_ sender: UIButton) {
-                rewardADSelect = "Money"
-                if rewardedAd?.isReady == true {
-                    rewardedAd?.present(fromRootViewController: self, delegate:self)
-                }
-            }
+        }
+        else if sender.currentTitle == "容器" {
+            libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
+            libTabMid.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
+            libTabRight.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
             
-            //MARK: - Reward AD
-            func createAndLoadRewardedAd() -> GADRewardedAd{
-                rewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-5920700831518359/9303424233")
-                rewardedAd?.load(GADRequest()) { error in
-                    if let error = error {
-                        print("Loading failed: \(error)")
-                    } else {
-                        print("Loading Succeeded")
-                    }
-                }
-                return rewardedAd!
-            }
+            let boxAmountInDB = realm.objects(BoxesData.self).count
+            showRows(ScrollArray: libScrollArray,Result: boxAmountInDB,line: 4)
+            var boxCount = 1
             
-            
-            /// Tells the delegate that the user earned a reward.
-            func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
-                //是哪個按鈕的廣告，去siteDB改Date成Now
-                if rewardADSelect == "Money"{
-                    try! realm.write {
-                        realm.objects(MainData.self)[0].mainMoney += 500
-                    }
-                    getSeedsMoneyView.isHidden = false
-                    backMainButton.alpha = 1
-                    seedMoneyMoney.text = String("x 500")
-                    seedMoneyStack.isHidden = false
+            for a in 0...boxAmountInDB - 1{
+                libButtonArray[a]!.alpha = 1
+                libButtonArray[a]!.alpha = 1
+                let boxDB = realm.objects(BoxesData.self).filter( "Seq == \(boxCount)")
+                for result in boxDB{
+                    libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                    libButtonArray[a]!.setTitle("\(boxCount)", for: .normal)
+                    libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
+                    libButtonArray[a]!.transform = CGAffineTransform(translationX: 0, y: -20)
                     
+                    libButtonArray[a]!.imageEdgeInsets = UIEdgeInsets(top: 25, left: 0, bottom: -25, right: 0)
                 }
-                else{
-                    try! realm.write {
-                        realm.objects(SiteData.self)[Int(rewardADSelect)!].timer = Date()
+                boxCount += 1
+            }
+            
+        }
+        else if sender.currentTitle == "道具" {
+            libTabLeft.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
+            libTabMid.setBackgroundImage(UIImage(named: "librarytab_Dark.png"), for: .normal)
+            libTabRight.setBackgroundImage(UIImage(named: "librarytab_Light.png"), for: .normal)
+            
+            let propAmountInDB = realm.objects(PropsData.self).count
+            
+            showRows(ScrollArray: libScrollArray,Result: propAmountInDB,line: 4)
+            var propCount = 1
+            if propAmountInDB >= 1{
+                for a in 0...propAmountInDB - 1{
+                    libButtonArray[a]!.alpha = 1
+                    libButtonArray[a]!.alpha = 1
+                    let propDB = realm.objects(PropsData.self).filter( "Seq == \(propCount)")
+                    for result in propDB{
+                        libButtonArray[a]!.setBackgroundImage(UIImage(named: "\(result.Image).png"), for: .normal)
+                        libButtonArray[a]!.setTitle("\(propCount)", for: .normal)
+                        libButtonArray[a]!.setTitleColor(UIColor.clear, for: .normal)
+
+                        libButtonArray[a]!.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
                     }
-//                    let url = Bundle.main.url(forResource: "BGM1", withExtension: "wav")
-//                    let asset = AVAsset(url: url!)
-//                    let item = AVPlayerItem(asset: asset)
-//                    self.queuePlayer = AVQueuePlayer(playerItem: item)
-//                    BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
-//                    queuePlayer.play()
-                    playMusic()
-                    print(queuePlayer?.items())
-                    getImage()
-                    initial()
-                    
+                    propCount += 1
                 }
-                print("Reward received with currency: \(reward.type), amount \(reward.amount).")
+                
             }
-            /// Tells the delegate that the rewarded ad was presented.
-            func rewardedAdDidPresent(_ rewardedAd: GADRewardedAd) {
-                playMusic()
-                print("Rewarded ad presented.")
+            
+        }
+    }
+    
+    
+    
+    
+    @IBAction func libraryItemPressed(_ sender: UIButton) {
+        playSoundEffect(fileName: "4")
+        itemSelected = String(sender.currentTitle ?? "")
+        if String(itemSelected) != ""{
+            libraryView.alpha = 0
+            libraryContentView.alpha = 1
+            setFuncPressed = "Library"
+            if tabSelected == "種子"{
+                let seeds = SeedLib()
+                let seedDB = realm.objects(SeedsData.self).filter( "#Seq == \(itemSelected)")
+                var NO = 0
+                for array in seedDB{
+                    NO = array.NO
+                    libraryCatImage.image = UIImage(named: "\(array.Image).png")
+                    libraryCatName.text = array.Name
+                    print(NO)
+                    libraryCatInfo.text = seeds.getInfo(NO: NO)
+                }
+                
+                
+                
             }
-            /// Tells the delegate that the rewarded ad was dismissed.
-            func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
-                var rewardedAd = createAndLoadRewardedAd()
-                 if realm.objects(SoundData.self)[0].musicOpen == true{
+            else if tabSelected == "容器" {
+                let box = BoxLib()
+                let boxDB = realm.objects(BoxesData.self).filter( "#Seq == \(itemSelected)")
+                var NO = 0
+                for array in boxDB{
+                    NO = array.NO
+                    libraryCatImage.image = UIImage(named: "\(array.Image).png")
+                    libraryCatName.text = array.Name
+                }
+                libraryCatInfo.text = box.getInfo(NO: NO)
+            }
+            else if tabSelected == "道具"{
+                let prop = PropLib()
+                let propDB = realm.objects(PropsData.self).filter( "#Seq == \(itemSelected)")
+                var NO = 0
+                for array in propDB{
+                    NO = array.NO
+                    libraryCatImage.image = UIImage(named: "\(array.Image).png")
+                    libraryCatName.text = array.Name
+                }
+                libraryCatInfo.text = prop.getInfo(NO: NO)
+            }
+        }
+    }
+    
+    func playMusic(slider: Bool = false){
+        
+        if realm.objects(SoundData.self)[0].musicOpen == true{
+            print(realm.objects(SoundData.self)[0].musicOpen)
+            if queuePlayer?.items() == nil {
                 let url = Bundle.main.url(forResource: "BGM1", withExtension: "wav")
-                                    let asset = AVAsset(url: url!)
-                                    let item = AVPlayerItem(asset: asset)
-                                    self.queuePlayer = AVQueuePlayer(playerItem: item)
-                                    BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
+                let asset = AVAsset(url: url!)
+                let item = AVPlayerItem(asset: asset)
+                self.queuePlayer = AVQueuePlayer(playerItem: item)
+                BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
+            }
+            if slider == true{
+                queuePlayer.volume = Float(musicVolume)
+            }
+            else{
                 queuePlayer.volume = realm.objects(SoundData.self)[0].musicVolume
-                                    queuePlayer.play()
-                }
-                print("Rewarded ad dismissed.")
             }
-            /// Tells the delegate that the rewarded ad failed to present.
-            func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
-                print("Rewarded ad failed to present.")
+            //                    queuePlayer.play()
+            self.queuePlayer?.play()
+        }
+        else{
+            print(realm.objects(SoundData.self)[0].musicOpen)
+            if queuePlayer?.items() != nil {
+                queuePlayer.pause()
             }
+        }
+        
+    }
+    func playSoundEffect(fileName: String, slider: Bool = false){
+        if realm.objects(SoundData.self)[0].soundOpen == true{
+            let url = Bundle.main.url(forResource: fileName, withExtension: "wav")
+            player = try! AVAudioPlayer(contentsOf: url!)
+            if slider == true{
+                player.volume = Float(soundVolume)
+            }
+            else{
+                player.volume = realm.objects(SoundData.self)[0].soundVolume
+            }
+            player.play()
+        }
+    }
+    
+    @IBAction func SpeedUP(_ sender: UIButton) {
+        
+        let TimeArray = [catTime1Button,catTime2Button,catTime3Button,catTime4Button,catTime5Button,catTime6Button,catTime7Button,catTime8Button]
+        
+        //紀錄sender
+        for a in 0...7{
+            if TimeArray[a] == sender{
+                rewardADSelect = String(a)
+            }
+        }
+        if sender.currentTitle != "0:0"{
+            if rewardedAd?.isReady == true {
+                rewardedAd?.present(fromRootViewController: self, delegate:self)
+            }
+        }
+        else {
+            sender.setTitle("0:0", for: .normal)
+        }
+    }
+    @IBAction func moneyPlusPressed(_ sender: UIButton) {
+        rewardADSelect = "Money"
+        if rewardedAd?.isReady == true {
+            rewardedAd?.present(fromRootViewController: self, delegate:self)
+        }
+    }
+    
+    //MARK: - Reward AD
+    func createAndLoadRewardedAd() -> GADRewardedAd{
+        rewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-5920700831518359/9303424233")
+        rewardedAd?.load(GADRequest()) { error in
+            if let error = error {
+                print("Loading failed: \(error)")
+            } else {
+                print("Loading Succeeded")
+            }
+        }
+        return rewardedAd!
+    }
+    
+    
+    /// Tells the delegate that the user earned a reward.
+    func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
+        //是哪個按鈕的廣告，去siteDB改Date成Now
+        if rewardADSelect == "Money"{
+            try! realm.write {
+                realm.objects(MainData.self)[0].mainMoney += 500
+            }
+            getSeedsMoneyView.isHidden = false
+            backMainButton.alpha = 1
+            seedMoneyMoney.text = String("x 500")
+            seedMoneyStack.isHidden = false
+            
+        }
+        else{
+            try! realm.write {
+                realm.objects(SiteData.self)[Int(rewardADSelect)!].timer = Date()
+            }
+            //                    let url = Bundle.main.url(forResource: "BGM1", withExtension: "wav")
+            //                    let asset = AVAsset(url: url!)
+            //                    let item = AVPlayerItem(asset: asset)
+            //                    self.queuePlayer = AVQueuePlayer(playerItem: item)
+            //                    BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
+            //                    queuePlayer.play()
+            playMusic()
+            print(queuePlayer?.items())
+            getImage()
+            initial()
+            
+        }
+        print("Reward received with currency: \(reward.type), amount \(reward.amount).")
+    }
+    /// Tells the delegate that the rewarded ad was presented.
+    func rewardedAdDidPresent(_ rewardedAd: GADRewardedAd) {
+        playMusic()
+        print("Rewarded ad presented.")
+    }
+    /// Tells the delegate that the rewarded ad was dismissed.
+    func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
+        var rewardedAd = createAndLoadRewardedAd()
+        if realm.objects(SoundData.self)[0].musicOpen == true{
+            let url = Bundle.main.url(forResource: "BGM1", withExtension: "wav")
+            let asset = AVAsset(url: url!)
+            let item = AVPlayerItem(asset: asset)
+            self.queuePlayer = AVQueuePlayer(playerItem: item)
+            BGMplayer = AVPlayerLooper(player: queuePlayer, templateItem: item)
+            queuePlayer.volume = realm.objects(SoundData.self)[0].musicVolume
+            queuePlayer.play()
+        }
+        getImage()
+        initial()
+        print("Rewarded ad dismissed.")
+    }
+    /// Tells the delegate that the rewarded ad failed to present.
+    func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
+        print("Rewarded ad failed to present.")
+    }
 }

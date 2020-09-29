@@ -23,11 +23,12 @@ struct Stories{
     
     let Story1 = [
         StorySet(Chara:"", Tag: "story0_1",EndPoint:false, Lines: "好小好小的我，遇見了好小好小的你。"),
-        StorySet(Chara:"", Tag: "story0_2",EndPoint:false, Lines: "我喜歡和淘氣的你一起玩遊戲，但討厭被調皮的你咬得慘兮兮。"),
-        StorySet(Chara:"", Tag: "story0_3",EndPoint:false, Lines: "我知道你不是故意讓我哭泣，因為你每一次都會來安慰我。"),
-        StorySet(Chara:"", Tag: "story0_4",EndPoint:false, Lines: "不管是開心的時候，"),
-        StorySet(Chara:"", Tag: "story0_5",EndPoint:false, Lines: "還是難過的時候，"),
-        StorySet(Chara:"", Tag: "story0_6",EndPoint:false, Lines: "一直一直有你陪著我。"),
+        StorySet(Chara:"", Tag: "story0_2",EndPoint:false, Lines: "我喜歡和淘氣的你一起玩遊戲，"),
+        StorySet(Chara:"", Tag: "story0_3",EndPoint:false, Lines: "但討厭被調皮的你咬得慘兮兮。"),
+        StorySet(Chara:"", Tag: "story0_4",EndPoint:false, Lines: "我知道你不是故意讓我哭泣，因為你每一次都會來安慰我。"),
+        StorySet(Chara:"", Tag: "story0_5",EndPoint:false, Lines: "不管是開心的時候，"),
+        StorySet(Chara:"", Tag: "story0_6",EndPoint:false, Lines: "還是難過的時候，"),
+        StorySet(Chara:"", Tag: "",EndPoint:false, Lines: "你總是和我在一起。"),
         StorySet(Chara:"", Tag: "story0_7",EndPoint:false, Lines: "但我忘記了，我們的時間不一樣。"),
         StorySet(Chara:"", Tag: "story0_8",EndPoint:false, Lines: "我還在慢慢長大，你卻已經等不及變老。"),
         StorySet(Chara:"", Tag: "story0_9",EndPoint:false, Lines: "終於，你的時間永遠停住了。"),
