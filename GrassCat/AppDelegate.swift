@@ -9,9 +9,10 @@
 import UIKit
 import RealmSwift
 import GoogleMobileAds
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
 
 
@@ -46,9 +47,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //GoogleADs
         GADMobileAds.configure(withApplicationID: "ca-app-pub-5920700831518359~5915661803")
 
+        //推播通知
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge, .carPlay]) { (granted, error) in
+            
+            if granted {
+                print("Allowed")
+            }
+            else {
+                print("Not Allowed")
+            }
+        }
+        
+        let snoozeAction = UNNotificationAction(identifier: "Snooze", title: "Snooze", options: [])
+        let dislikeAction = UNNotificationAction(identifier: "Stop", title: "Stop", options: [])
+        let category = UNNotificationCategory(identifier: "alarmMessage", actions: [snoozeAction, dislikeAction], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([category])
+        
+        UNUserNotificationCenter.current().delegate = self
+        
         return true
     }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 
+        completionHandler([.alert, .sound, .badge])
+    }
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

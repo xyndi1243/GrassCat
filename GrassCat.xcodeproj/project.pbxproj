@@ -22,6 +22,7 @@
 		2130D55D24CDA3B9003A1FD1 /* SeedsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2130D55C24CDA3B9003A1FD1 /* SeedsData.swift */; };
 		2130D55F24D05D9F003A1FD1 /* BoxData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2130D55E24D05D9F003A1FD1 /* BoxData.swift */; };
 		2132338024531D24004A69C6 /* StoryLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2132337F24531D24004A69C6 /* StoryLib.swift */; };
+		213CD296252732980052514F /* 1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 213CD295252732970052514F /* 1024.png */; };
 		2152AA832487C994005A5B8A /* TrainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152AA822487C994005A5B8A /* TrainViewController.swift */; };
 		2165F3922445A56600B431E9 /* SiteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2165F3912445A56600B431E9 /* SiteData.swift */; };
 		2165F394244746A700B431E9 /* CatSeedLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2165F393244746A700B431E9 /* CatSeedLib.swift */; };
@@ -57,6 +58,7 @@
 		2130D55C24CDA3B9003A1FD1 /* SeedsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedsData.swift; sourceTree = "<group>"; };
 		2130D55E24D05D9F003A1FD1 /* BoxData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxData.swift; sourceTree = "<group>"; };
 		2132337F24531D24004A69C6 /* StoryLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryLib.swift; sourceTree = "<group>"; };
+		213CD295252732970052514F /* 1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1024.png; path = GrassCat/Assets.xcassets/AppIcon.appiconset/1024.png; sourceTree = SOURCE_ROOT; };
 		2152AA822487C994005A5B8A /* TrainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainViewController.swift; sourceTree = "<group>"; };
 		2165F3912445A56600B431E9 /* SiteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteData.swift; sourceTree = "<group>"; };
 		2165F393244746A700B431E9 /* CatSeedLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatSeedLib.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		210E83B82501390C0046111E /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				213CD295252732970052514F /* 1024.png */,
 				210E83D32501404A0046111E /* 1.wav */,
 				210E83D1250140490046111E /* 2.wav */,
 				210E83D0250140490046111E /* 3_2.wav */,
@@ -278,6 +281,7 @@
 				216A7337242B4970003AD298 /* LaunchScreen.storyboard in Resources */,
 				210E83D82501404E0046111E /* 6.wav in Resources */,
 				216A7326242B2FB8003AD298 /* Assets.xcassets in Resources */,
+				213CD296252732980052514F /* 1024.png in Resources */,
 				216A7321242B2FB4003AD298 /* Main.storyboard in Resources */,
 				210E83DA2501404E0046111E /* 3_2.wav in Resources */,
 			);
@@ -494,7 +498,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 9RP36ZQ6S4;
 				INFOPLIST_FILE = GrassCat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -514,7 +518,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 9RP36ZQ6S4;
 				INFOPLIST_FILE = GrassCat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

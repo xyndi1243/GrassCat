@@ -10,11 +10,12 @@ import UIKit
 import RealmSwift
 import GoogleMobileAds
 import AVFoundation
+import Network
 
 
 class MainViewController: UIViewController , GADRewardedAdDelegate{
     
-    
+    let monitor = NWPathMonitor()
     
     let realm = try! Realm()
     var mainData = MainData()
@@ -297,15 +298,15 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        initial()
         playMusic()
         
         rewardedAd = createAndLoadRewardedAd()
         
-        initial()
+        
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { (notification) in
             self.queuePlayer?.pause()
-            
+            self.createNotification()
         }
         NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { (notification) in
             
@@ -318,8 +319,18 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
             
         }
         
+        monitor.pathUpdateHandler = { path in
+             if path.status == .satisfied {
+                print("connected")
+             } else {
+                print("no connection")
+             }
+          }
+          monitor.start(queue: DispatchQueue.global())
+      
+        
     }
-    
+   
     override func viewDidDisappear(_ animated: Bool) {
         self.timerSche!.invalidate()
         //        BGMplayer!.stop()
@@ -329,6 +340,10 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     }
     //MARK: - Initail Func
     func initial(){
+        money.text = String(realm.objects(MainData.self)[0].mainMoney)
+        
+        musicVolume = Double(realm.objects(SoundData.self)[0].musicVolume)
+        soundVolume = Double(realm.objects(SoundData.self)[0].soundVolume)
         
         self.timerSche?.invalidate()
         timeSche(repeats: true, runtime: 1)
@@ -396,10 +411,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         seedMoneySeedStack.transform =  CGAffineTransform(translationX: 0, y: 0)
         SeedMoneySeedImage.transform = CGAffineTransform(translationX: 0, y: 0)
         sitePressed = ""
-        money.text = String(realm.objects(MainData.self)[0].mainMoney)
         
-        musicVolume = Double(realm.objects(SoundData.self)[0].musicVolume)
-        soundVolume = Double(realm.objects(SoundData.self)[0].soundVolume)
     }
     
     @IBAction func catSitesButtonPressed(_ sender: UIButton) {
@@ -506,10 +518,10 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                     if propShowCount == 0{
                         //show no props can use, please goto shop
                         itemsView.alpha = 0
-                        print("沒有道具可使用\n\n請到商店購買")
+                        print("道具空空、櫃子空空、只有口袋不空空！\n\n商店的大門為你開啟！")
                         getSeedsMoneyView.isHidden = false
                         seedLabel.isHidden = false
-                        seedLabel.text = "沒有道具可使用\n\n請到商店購買"
+                        seedLabel.text = "道具空空、櫃子空空、只有口袋不空空！\n\n商店的大門為你開啟！"
                     }
                     
                 }
@@ -520,7 +532,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                     print("沒有道具可使用\n\n請到商店購買")
                     getSeedsMoneyView.isHidden = false
                     seedLabel.isHidden = false
-                    seedLabel.text = "沒有道具可使用\n\n請到商店購買"
+                    seedLabel.text = "道具空空、櫃子空空、只有口袋不空空！\n\n商店的大門為你開啟！"
                 }
                 
             }
@@ -528,7 +540,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 getSeedsMoneyView.isHidden = false
                 seedLabel.isHidden = false
                 //                backMainButton.alpha = 1
-                seedLabel.text = "已使用過道具\n\n不可再使用"
+                seedLabel.text = "用過了用過了！\n\n貓貓也會膩，給別貓用用看嘛！"
             }
         }
             
@@ -1090,6 +1102,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     @IBAction func itemsTabPressed(_ sender: UIButton) {
         playSoundEffect(fileName: "2")
         tabSelected = sender.currentTitle!
+        
         let itemButtonArray = [itemButton1_1,itemButton1_2,itemButton1_3,itemButton2_1,itemButton2_2,itemButton2_3,itemButton3_1,itemButton3_2,itemButton3_3,itemButton4_1,itemButton4_2,itemButton4_3,itemButton5_1,itemButton5_2,itemButton5_3,itemButton6_1,itemButton6_2,itemButton6_3]
         
         let itemAmountArray = [itemAmountButton1_1,itemAmountButton1_2,itemAmountButton1_3,itemAmountButton2_1,itemAmountButton2_2,itemAmountButton2_3,itemAmountButton3_1,itemAmountButton3_2,itemAmountButton3_3,itemAmountButton4_1,itemAmountButton4_2,itemAmountButton4_3,itemAmountButton5_1,itemAmountButton5_2,itemAmountButton5_3,itemAmountButton6_1,itemAmountButton6_2,itemAmountButton6_3]
@@ -1099,6 +1112,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         for e in itemButtonArray + itemAmountArray{
             e!.alpha = 0
         }
+        backMainButton2.alpha = 1
         itemConfirm.setImage(UIImage(named: "confirm_Dark.png"), for: .normal)
         showRows(ScrollArray: itemScrollArray,Result: 1 ,line: 5)
         
@@ -1198,7 +1212,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 else{
                     getSeedsMoneyView.isHidden = false
                     seedLabel.isHidden = false
-                    seedLabel.text = "目前無其他可購買容器"
+                    seedLabel.text = "容器賣光光了！\n\n等以後進貨再來買！"
                     backMainButton2.alpha = 0
                 }
             }
@@ -1346,7 +1360,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 else{
                     getSeedsMoneyView.isHidden = false
                     seedLabel.isHidden = false
-                    seedLabel.text = "尚未持有任何道具\n\n請至商店購買"
+                    seedLabel.text = "道具空空、櫃子空空、只有口袋不空空！\n\n商店的大門為你開啟！"
                 }
             }
         }
@@ -1591,7 +1605,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
             else{
                 //特殊道具效果
             }
-            seedLabel.text = "已使用\n\n\(prop.getName(NO: propNO))"
+            seedLabel.text = "使用\n\(prop.getName(NO: propNO))\n成功啦！"
         }
     }
     
@@ -1686,6 +1700,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         let libScrollArray = [libraryScrollView1,libraryScrollView2,libraryScrollView3,libraryScrollView4,libraryScrollView5,libraryScrollView6]
         
         for e in libButtonArray{
+            e!.setTitle("", for: .normal)
             e!.setBackgroundImage(UIImage(named: "library_unknown.png"), for: .normal)
         }
         libraryScrollView.setContentOffset(CGPoint(x: 0, y: 0 ), animated: false)
@@ -1777,7 +1792,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
     @IBAction func libraryItemPressed(_ sender: UIButton) {
         playSoundEffect(fileName: "4")
         itemSelected = String(sender.currentTitle ?? "")
-        if String(itemSelected) != ""{
+        if String(itemSelected) != "" {
             libraryView.alpha = 0
             libraryContentView.alpha = 1
             setFuncPressed = "Library"
@@ -1792,8 +1807,6 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                     print(NO)
                     libraryCatInfo.text = seeds.getInfo(NO: NO)
                 }
-                
-                
                 
             }
             else if tabSelected == "容器" {
@@ -1877,6 +1890,18 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
             if rewardedAd?.isReady == true {
                 rewardedAd?.present(fromRootViewController: self, delegate:self)
             }
+            else{
+                backMainButton.alpha = 1
+                itemsView.alpha = 0
+                getSeedsMoneyView.isHidden = false
+                seedLabel.isHidden = false
+                if monitor.currentPath.status != .satisfied{
+                    seedLabel.text = "現在撥接接不上哇，\n\n看不到廣告——"
+                }
+                else{
+                seedLabel.text = "跟貓貓電台的通訊不穩，\n\n找不到廣告耶⋯⋯"
+                }
+            }
         }
         else {
             sender.setTitle("0:0", for: .normal)
@@ -1887,14 +1912,70 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
         if rewardedAd?.isReady == true {
             rewardedAd?.present(fromRootViewController: self, delegate:self)
         }
+        else{
+            backMainButton.alpha = 1
+            itemsView.alpha = 0
+            getSeedsMoneyView.isHidden = false
+            seedLabel.isHidden = false
+            if monitor.currentPath.status != .satisfied{
+                seedLabel.text = "現在撥接接不上哇，\n\n看不到廣告——"
+            }
+            else{
+            seedLabel.text = "跟貓貓電台的通訊不穩，\n\n找不到廣告耶⋯⋯"
+            }
+        }
     }
     
+    
+    //MARK: - Notification
+    func createNotification() {
+           
+        let Datas = realm.objects(SiteData.self)
+        var interval = Double()
+        for a in [0...7]{
+        let DatasPerSite = Datas.self[a]
+             for result in DatasPerSite{
+                if result.flag == true{
+                    let endTime = result.timer
+                    let nowTime = Date()
+                    let intervalA = endTime.timeIntervalSince(nowTime)
+                    if interval == 0 && intervalA > 0{
+                        interval = intervalA
+                    }
+                    else if intervalA > 0 && intervalA < interval{
+                        interval = intervalA
+                    }
+                }
+        }
+        }
+        print(interval)
+        if interval > 0 {
+           let content = UNMutableNotificationContent()
+           
+           content.title = "咚咚♪鏘鏘♪貓貓長大啦——"
+//           content.subtitle = "不來看看嗎？看一下啦——！看一下啦！"
+           content.body = "不來看看嗎？看一下啦——！看一下啦！"
+           content.badge = 1
+           content.sound = UNNotificationSound.default
+           content.categoryIdentifier = "alarmMessage"
+
+           let imageURL = Bundle.main.url(forResource: "1024", withExtension: "png")
+           let attachment = try! UNNotificationAttachment(identifier: "", url: imageURL!, options: nil)
+           
+           content.attachments = [attachment]
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+               let request = UNNotificationRequest(identifier: "notification", content: content, trigger: trigger)
+               
+               UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+           }
+    }
     //MARK: - Reward AD
     func createAndLoadRewardedAd() -> GADRewardedAd{
         rewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-5920700831518359/9303424233")
         rewardedAd?.load(GADRequest()) { error in
             if let error = error {
                 print("Loading failed: \(error)")
+                
             } else {
                 print("Loading Succeeded")
             }

@@ -48,6 +48,10 @@ struct SeedLib{
             Time = NO * 30
         case 4...6:
             Time = NO * 40
+        case 7...10:
+            Time = NO * 42
+        case 11...15:
+            Time = NO * 45
         default:
             Time = 30
         }
@@ -65,6 +69,12 @@ struct SeedLib{
         case 4...6:
             min = 3
             max = 5
+        case 7...10:
+            min = 3
+            max = 4
+        case 11...15:
+            min = 2
+            max = 4
         default:
             min = 2
             max = 5
@@ -93,12 +103,21 @@ struct MixSetting{
 }
 struct MixSeeds{
     let mix = [
-        MixSetting(MixNO: 3, SeedOne: 1, SeedTwo: 2),
-        MixSetting(MixNO: 4, SeedOne: 1, SeedTwo: 3),
-        MixSetting(MixNO: 4, SeedOne: 2, SeedTwo: 3),
-        MixSetting(MixNO: 5, SeedOne: 3, SeedTwo: 4),
-        MixSetting(MixNO: 5, SeedOne: 2, SeedTwo: 4),
-        MixSetting(MixNO: 5, SeedOne: 1, SeedTwo: 4)//待補
+        MixSetting(MixNO:3, SeedOne:2, SeedTwo:1)
+        ,MixSetting(MixNO:4, SeedOne:3, SeedTwo:1)
+        ,MixSetting(MixNO:4, SeedOne:3, SeedTwo:2)
+        ,MixSetting(MixNO:3, SeedOne:4, SeedTwo:1)//5
+        ,MixSetting(MixNO:5, SeedOne:4, SeedTwo:2)
+        ,MixSetting(MixNO:1, SeedOne:4, SeedTwo:3)
+//        ,MixSetting(MixNO:3, SeedOne:5, SeedTwo:1)//6
+//        ,MixSetting(MixNO:6, SeedOne:5, SeedTwo:2)
+//        ,MixSetting(MixNO:2, SeedOne:5, SeedTwo:3)
+//        ,MixSetting(MixNO:1, SeedOne:5, SeedTwo:4)
+//        ,MixSetting(MixNO:5, SeedOne:6, SeedTwo:1)//7
+//        ,MixSetting(MixNO:4, SeedOne:6, SeedTwo:2)
+//        ,MixSetting(MixNO:7, SeedOne:6, SeedTwo:3)
+//        ,MixSetting(MixNO:3, SeedOne:6, SeedTwo:4)
+//        ,MixSetting(MixNO:1, SeedOne:6, SeedTwo:5)
     ]
     
     func getNewCombineSeed(NO1: Int, NO2: Int) -> Int{

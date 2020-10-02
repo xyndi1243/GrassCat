@@ -11,7 +11,7 @@ import RealmSwift
 
 class SiteData: Object{
     @objc dynamic var Site: String = "" //第幾個位置->直接放名字
-    @objc dynamic var timer = Date() // 預設創建資料的時間->紀錄什麼時間可收成
+    @objc dynamic var timer = Date() // 紀錄什麼時間可收成
     @objc dynamic var catSeq: Int = 0 // 改成catSeq&Image都要（
     @objc dynamic var seedImage: String = "cat0"
     @objc dynamic var siteImage: String = "box0" //

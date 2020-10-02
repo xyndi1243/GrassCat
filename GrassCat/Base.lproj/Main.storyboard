@@ -637,13 +637,13 @@
                                     <action selector="backToMain:" destination="BYZ-38-t0r" eventType="touchUpInside" id="knd-lX-06f"/>
                                 </connections>
                             </button>
-                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ga8-Yi-cwV" userLabel="Library View">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ga8-Yi-cwV" userLabel="Library View">
                                 <rect key="frame" x="-60" y="104.66666666666669" width="507.33333333333331" height="602.66666666666652"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="library_category" translatesAutoresizingMaskIntoConstraints="NO" id="o85-vs-tFq">
                                         <rect key="frame" x="0.0" y="0.0" width="507.33333333333331" height="602.66666666666663"/>
                                     </imageView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="ee3-xM-xVJ">
+                                    <stackView opaque="NO" alpha="0.0" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="ee3-xM-xVJ">
                                         <rect key="frame" x="119.99999999999997" y="123.66666666666666" width="304.33333333333326" height="361.33333333333337"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="音量設定" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cwi-hB-cNn">
@@ -769,7 +769,7 @@
                                             <constraint firstItem="Cwi-hB-cNn" firstAttribute="top" secondItem="ee3-xM-xVJ" secondAttribute="top" id="MeH-SB-vHN"/>
                                         </constraints>
                                     </stackView>
-                                    <stackView opaque="NO" alpha="0.0" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="WjF-BS-ePy" userLabel="Library Stack View">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="WjF-BS-ePy" userLabel="Library Stack View">
                                         <rect key="frame" x="99.666666666666629" y="75.333333333333314" width="345" height="451.99999999999994"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Ak9-Gz-S5t">
@@ -1594,7 +1594,7 @@
                                     <constraint firstItem="ee3-xM-xVJ" firstAttribute="centerY" secondItem="o85-vs-tFq" secondAttribute="centerY" multiplier="1.01" id="uZs-xd-DvM"/>
                                 </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="9R0-TG-pc4" userLabel="Cat&amp;Box Stack View">
+                            <stackView opaque="NO" alpha="0.0" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="9R0-TG-pc4" userLabel="Cat&amp;Box Stack View">
                                 <rect key="frame" x="30" y="134" width="362.33333333333331" height="554"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Eam-KJ-2lq">
