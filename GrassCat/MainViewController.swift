@@ -1360,6 +1360,7 @@ class MainViewController: UIViewController , GADRewardedAdDelegate{
                 else{
                     getSeedsMoneyView.isHidden = false
                     seedLabel.isHidden = false
+                    backMainButton2.alpha = 0
                     seedLabel.text = "道具空空、櫃子空空、只有口袋不空空！\n\n商店的大門為你開啟！"
                 }
             }

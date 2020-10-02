@@ -19,9 +19,9 @@ struct PropSet{
 }
 struct PropLib{
     let props = [
-        PropSet(NO:1,Name:"焦臉藥水",Image:"potion01",Rate: 0.95 ,AddAmount: 0, Effect:"", Info:"好像麵包烤焦的臉，脖子上的閃電符號似乎在暗示著什麼？"),
-        PropSet(NO:2,Name:"黑白貓藥水",Image:"potion02",Rate: 1,AddAmount: 1, Effect:"", Info:"渾身漆黑的紳士貓配上潔白的淑女貓，究竟代表了什麼意思呢？"),
-        PropSet(NO:3,Name:"螢光焦臉藥水",Image:"potion03",Rate: 0.9 ,AddAmount: 0, Effect:"", Info:"綠色的液體在黑暗中發著光，跟焦臉比起來好像更厲害了一些。")
+        PropSet(NO:1,Name:"焦臉貓",Image:"potion01",Rate: 0.95 ,AddAmount: 0, Effect:"", Info:"焦臉貓藥水。\n\n像是麵包烤焦的臉，脖子上的閃電符號似乎在暗示著什麼？"),
+        PropSet(NO:2,Name:"黑白貓",Image:"potion02",Rate: 1,AddAmount: 1, Effect:"", Info:"黑白貓藥水。\n\n渾身漆黑的紳士貓配上潔白的淑女貓，究竟代表了什麼意思呢？"),
+        PropSet(NO:3,Name:"螢光貓",Image:"potion03",Rate: 0.9 ,AddAmount: 0, Effect:"", Info:"螢光色焦臉藥水。\n\n綠色的液體在黑暗中發著光，跟焦臉比起來好像更厲害了一些。")
         //PropSet(NO:3,Name:"紫色藥水",Image:"potion03",Rate: 0.9 ,AddAmount: 1, Effect:"", Info:"可以在些許減少種植時間的同時，些許增加收成時獲得的種子數量")
     ]
     
